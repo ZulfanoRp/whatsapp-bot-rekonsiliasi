@@ -6,6 +6,9 @@ const pool = require('./config/db');
 
 app.use(express.json());
 
+const webhookRoutes = require('./routes/webhook');
+app.use('/webhook', webhookRoutes);
+
 app.get('/health', (req, res) => {
   res.json({ status: 'OK' });
 });
