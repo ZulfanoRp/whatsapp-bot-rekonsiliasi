@@ -39,6 +39,7 @@ frontend/build/
 # =========================
 backend/output/
 backend/output/recon/
+backend/output/cek/
 *.xlsx
 
 # =========================
