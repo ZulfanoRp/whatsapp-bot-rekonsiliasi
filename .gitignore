@@ -48,3 +48,9 @@ backend/output/cek/
 .vscode/
 .idea/
 *.swp
+
+# =========================
+# Create table admin user
+# =========================
+scripts/insertAdminUser.js
+

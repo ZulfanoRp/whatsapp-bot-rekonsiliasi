@@ -5,6 +5,8 @@ const pool = require('../config/db');
 const { generateCekExcel } = require('../utils/excelCekGenerator');
 const { uploadDocument, sendDocument } = require('../services/whatsappMediaService');
 const reconSession = new Map();
+const { isWhitelisted } = require('../utils/whitelistChecker');
+
 
 /**
  * GET webhook verification (WAJIB untuk Meta)
@@ -39,6 +41,14 @@ router.post('/whatsapp', async (req, res) => {
 
     // ✅ WAJIB: deklarasi from di awal
     const from = message.from.replace(/\D/g, '');
+
+    // ===== WHITELIST GUARD =====
+    const allowed = await isWhitelisted(from);
+    if (!allowed) {
+      // balas sekali saja (opsional), atau silent drop
+      return res.sendStatus(200);
+    }
+
 
     /* =====================================================
        HANDLE FILE EXCEL (RECON)
