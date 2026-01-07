@@ -27,6 +27,20 @@ router.get('/whatsapp', (req, res) => {
 /**
  * POST webhook receive message (BOT HEALTH CHECK)
  */
+
+async function insertLog(whitelist_id, command, response_result) {
+  try {
+    await pool.query(
+      `INSERT INTO log_activity (whitelist_id, command, response_result, timestamp)
+       VALUES (?, ?, ?, NOW())`,
+      [whitelist_id, command, response_result]
+    );
+  } catch (e) {
+    console.error('Log error:', e.message);
+    // jangan throw
+  }
+}
+
 router.post('/whatsapp', async (req, res) => {
   console.log('=== WEBHOOK HIT ===');
 
@@ -35,19 +49,38 @@ router.post('/whatsapp', async (req, res) => {
     const change = entry?.changes?.[0];
     const value = change?.value;
 
+    // [ERROR HANDLING] event non-message dari Meta
+    if (!value || !Array.isArray(value.messages)) {
+      return res.sendStatus(200);
+    }
+
     if (!value || !value.messages) return res.sendStatus(200);
 
     const message = value.messages[0];
+
+    // [ERROR HANDLING] message tanpa sender
+    if (!message.from) {
+      return res.sendStatus(200);
+    }
+
 
     // ✅ WAJIB: deklarasi from di awal
     const from = message.from.replace(/\D/g, '');
 
     // ===== WHITELIST GUARD =====
-    const allowed = await isWhitelisted(from);
-    if (!allowed) {
-      // balas sekali saja (opsional), atau silent drop
+    let whitelist;
+    try {
+      whitelist = await isWhitelisted(from);
+    } catch (e) {
+      console.error('Whitelist DB error:', e.message);
       return res.sendStatus(200);
     }
+
+    if (!whitelist) {
+      return res.sendStatus(200);
+    }
+
+    const whitelist_id = whitelist.whitelist_id;
 
 
     /* =====================================================
@@ -69,6 +102,12 @@ router.post('/whatsapp', async (req, res) => {
         partnerFilePath
       );
 
+      await insertLog(
+        whitelist_id,
+        'UPLOAD_EXCEL',
+        message.document.filename
+      );
+
       await pool.query(
         `INSERT INTO recon_history
         (total_internal, total_partner, total_selisih, total_cid, result_file_path)
@@ -82,6 +121,11 @@ router.post('/whatsapp', async (req, res) => {
         ]
       );
 
+      await insertLog(
+        whitelist_id,
+        'RECON_SUCCESS',
+        `output/recon/${filename}`
+      );
 
       const mediaResultId = await uploadDocument(resultPath);
       await sendDocument(from, mediaResultId, 'hasil_rekonsiliasi.xlsx');
@@ -106,6 +150,11 @@ router.post('/whatsapp', async (req, res) => {
 
     /* ================= !ASKBOT ================= */
     if (command === '!askbot') {
+      await insertLog(
+        whitelist_id,
+        'ASKBOT',
+        'show command list'
+      );
       await axios.post(
         `https://graph.facebook.com/${process.env.API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages`,
         {
@@ -135,6 +184,12 @@ router.post('/whatsapp', async (req, res) => {
     if (command === '!cek') {
       const parts = text.split(' ');
       if (parts.length !== 4) {
+
+        await insertLog(
+          whitelist_id,
+          'CEK_FAILED',
+          text
+        );
         await axios.post(
           `https://graph.facebook.com/${process.env.API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages`,
           {
@@ -165,6 +220,27 @@ router.post('/whatsapp', async (req, res) => {
         [contentId, startDate, endDate]
       );
 
+      // [ERROR HANDLING] data traffic kosong
+      if (detailRows.length === 0) {
+        await insertLog(
+          whitelist_id,
+          'CEK_EMPTY',
+          text
+        );
+
+        await axios.post(
+          `https://graph.facebook.com/${process.env.API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages`,
+          {
+            messaging_product: 'whatsapp',
+            to: from,
+            text: { body: '❌ Data tidak ditemukan untuk CID dan periode tersebut.' }
+          },
+          { headers: { Authorization: `Bearer ${process.env.ACCESS_TOKEN}` } }
+        );
+
+        return res.sendStatus(200);
+      }
+
       const reply =
         `📊 *Hasil Cek Traffic*\n\n` +
         `CID: ${contentId}\n` +
@@ -191,13 +267,23 @@ router.post('/whatsapp', async (req, res) => {
       const mediaId = await uploadDocument(filepath);
       await sendDocument(from, mediaId, filename);
 
+      await insertLog(
+        whitelist_id,
+        'CEK_SUCCESS',
+        text
+      );
+
       return res.sendStatus(200);
     }
 
     /* ================= !RECON ================= */
     if (command === '!recon') {
       reconSession.set(from, { status: 'WAIT_FILE' });
-
+      await insertLog(
+        whitelist_id,
+        'RECON',
+        'waiting for excel'
+      );
       await axios.post(
         `https://graph.facebook.com/${process.env.API_VERSION}/${process.env.PHONE_NUMBER_ID}/messages`,
         {

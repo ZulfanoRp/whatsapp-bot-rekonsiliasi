@@ -1,11 +1,16 @@
 const pool = require('../config/db');
 
-async function isWhitelisted(noWhatsapp) {
+async function isWhitelisted(number) {
   const [rows] = await pool.query(
-    `SELECT 1 FROM whitelist WHERE no_whatsapp = ? AND status = 'ACTIVE' LIMIT 1`,
-    [noWhatsapp]
+    `SELECT whitelist_id
+     FROM whitelist
+     WHERE no_whatsapp = ?
+       AND status = 'ACTIVE'
+     LIMIT 1`,
+    [number]
   );
-  return rows.length > 0;
+
+  return rows.length > 0 ? rows[0] : null;
 }
 
 module.exports = { isWhitelisted };
