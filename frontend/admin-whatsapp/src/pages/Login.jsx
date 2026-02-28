@@ -1,63 +1,84 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import "./Login.css";
+import { useNavigate } from "react-router-dom";
 
-const API_URL = 'http://localhost:3000/api/auth/login';
+const API_URL = "http://localhost:3000/api/auth/login";
 
 export default function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
-    setError('');
-
-    if (!username || !password) {
-      setError('Username dan password wajib diisi');
-      return;
-    }
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
     try {
-      const res = await axios.post(API_URL, {
-        username,
-        password
-      });
+      const response = await axios.post(API_URL, { username, password });
+      console.log("LOGIN RESULT:", response.data);
 
-      if (res.data.success) {
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('username', res.data.username);
-        navigate('/whitelist');
+      if (response.data?.success) {
+        localStorage.setItem("isLoggedIn", "true");
+        navigate("/whitelist");
       } else {
-        setError('Username atau password salah');
+        setError("Invalid username or password.");
       }
-    } catch {
-      setError('Gagal menghubungi server');
+    } catch (err) {
+      console.error(err);
+      setError("Terjadi kesalahan saat login.");
     }
   };
 
   return (
-    <div style={{ marginTop: 100, textAlign: 'center' }}>
-      <h2>Admin Login</h2>
+    <div className="login-page">
+      <div className="login-card">
 
-      <input
-        placeholder="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <br /><br />
+        {/* HEADER */}
+        <div className="login-header">
+          <div className="logo-circle">
+            <i className="fa-brands fa-whatsapp"></i>
+          </div>
+          <h2>WhatsApp Config</h2>
+          <p>Dashboard Login</p>
+        </div>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br /><br />
+        {/* CONTENT */}
+        <form className="login-content" onSubmit={handleLogin}>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+          <label>Username</label>
+          <div className="input-box">
+            <i className="fa-solid fa-user"></i>
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          </div>
 
-      <button onClick={handleLogin}>Login</button>
+          <label>Password</label>
+          <div className="input-box">
+            <i className="fa-solid fa-lock"></i>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          {error && <p className="error-text">{error}</p>}
+
+          <button className="login-button" type="submit">
+            Login
+          </button>
+        </form>
+
+        {/* FOOTER */}
+        <div className="login-footer">Created By Team 2</div>
+      </div>
     </div>
   );
 }

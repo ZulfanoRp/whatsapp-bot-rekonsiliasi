@@ -18,7 +18,7 @@ async function processRecon(partnerFilePath) {
       typeof v === 'string' ? v.toLowerCase().trim() : ''
     );
 
-    const requiredHeaders = ['event date', 'content id', 'traffic'];
+    const requiredHeaders = ['event_date', 'content_id', 'traffic'];
     requiredHeaders.forEach(h => {
       if (!header.some(col => col.includes(h))) {
         throw new Error(`Invalid partner Excel header: missing ${h}`);
@@ -53,6 +53,7 @@ async function processRecon(partnerFilePath) {
 
     // === DETAIL MAP ===
     const detailMap = {};
+    const diffDateMap = {};
     partnerRows.forEach(r => {
       const key = `${r.event_date}|${r.content_id}`;
       detailMap[key] = {
@@ -93,6 +94,17 @@ async function processRecon(partnerFilePath) {
       }
     });
 
+    // [FIX] kumpulkan tanggal selisih (partner > tsel) sebelum Summary
+    Object.values(detailMap).forEach(r => {
+      if (r.partner > r.tsel) {
+        if (!diffDateMap[r.content_id]) {
+          diffDateMap[r.content_id] = new Set();
+        }
+        diffDateMap[r.content_id].add(r.event_date);
+      }
+    });
+
+
     // === SUMMARY PER CONTENT ID ===
     const summaryMap = {};
     Object.values(detailMap).forEach(r => {
@@ -125,7 +137,8 @@ async function processRecon(partnerFilePath) {
       { header: 'Traffic (Tsel)', key: 'tsel', width: 18 },
       { header: 'Traffic (Partner)', key: 'partner', width: 18 },
       { header: 'Selisih jumlah', key: 'diff', width: 18 },
-      { header: 'Selisih %', key: 'pct', width: 15 }
+      { header: 'Selisih %', key: 'pct', width: 15 },
+      { header: 'Tanggal Selisih (Partner > Tsel)', key: 'diff_dates', width: 30}
     ];
 
     Object.entries(summaryMap).forEach(([cid, v]) => {
@@ -136,9 +149,16 @@ async function processRecon(partnerFilePath) {
         tsel: v.tsel,
         partner: v.partner,
         diff,
-        pct: `${pct}%`
+        pct: `${pct}%`,
+        diff_dates: diffDateMap[cid]
+          ? Array.from(diffDateMap[cid]).map(d => `• ${d}`).join('\n')
+          : '-'
       });
     });
+
+    // [ADD] wrap text agar multiline terbaca di Summary
+    s1.getColumn('diff_dates').alignment = { wrapText: true };
+
 
     // DETAIL SHEET
     const s2 = outWb.addWorksheet('Detail');
@@ -172,6 +192,11 @@ async function processRecon(partnerFilePath) {
     const filename = `recon_${timestamp}.xlsx`;
     const resultPath = path.join(__dirname, '../../output/recon', filename);
 
+    // [ADD] apply border ke tabel
+    applyTableBorder(s1); // Summary
+    applyTableBorder(s2); // Detail
+
+
     await outWb.xlsx.writeFile(resultPath);
 
     return {
@@ -189,6 +214,20 @@ async function processRecon(partnerFilePath) {
     // [ERROR HANDLING] lempar ke webhook.js
     throw err;
   }
+}
+
+// [ADD] helper untuk border tabel
+function applyTableBorder(sheet) {
+  sheet.eachRow(row => {
+    row.eachCell(cell => {
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' }
+      };
+    });
+  });
 }
 
 module.exports = { processRecon };

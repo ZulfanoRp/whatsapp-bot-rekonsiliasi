@@ -1,0 +1,197 @@
+/* PAGE AREA */
+.content-area {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* HEADER (TITLE + BUTTON) */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+/* SEARCH */
+.search-box {
+  margin-bottom: 25px;
+}
+
+.search-bar {
+  width: 340px;
+  padding: 12px;
+  border: 2px solid #b6e7c7;
+  border-radius: 10px;
+  background: #f8fff6;
+  font-size: 15px;
+}
+
+/* BUTTON TAMBAH */
+.btn-add {
+  background: #00a165;
+  padding: 12px 26px;
+  border-radius: 10px;
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-add:hover {
+  background: #008c52;
+}
+
+/* TABLE WRAPPER */
+.table-wrapper {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+}
+
+th {
+  background: #e6f8eb;
+  font-weight: 700;
+  color: #006b43;
+}
+
+/* EDIT DELETE BTN */
+.btn-edit {
+  background: #3498db;
+  padding: 7px 16px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-delete {
+  background: #e74c3c;
+  padding: 7px 16px;
+  color: white;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+/* TOGGLE SWITCH */
+.switch {
+  position: relative;
+  width: 46px;
+  height: 24px;
+  display: inline-block;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: #ccc;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  left: 3px;
+  top: 3px;
+  transition: 0.3s;
+}
+
+input:checked + .slider {
+  background: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+/* MODAL */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.modal-box {
+  background: white;
+  padding: 35px;
+  width: 480px;
+  max-width: 90%;
+  border-radius: 14px;
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+}
+
+.modal-title {
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.modal-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 2px solid #ccead8;
+  font-size: 16px;
+  margin-top: 12px;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.btn-save {
+  background: #00a165;
+  padding: 10px 18px;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-cancel {
+  background: #aaa;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}

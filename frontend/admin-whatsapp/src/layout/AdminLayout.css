@@ -1,0 +1,29 @@
+/* Hilangkan scroll dari seluruh halaman */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Layout utama */
+.layout-container {
+  display: flex;
+  height: 100vh;       /* FIX masalah utama */
+  overflow: hidden;
+}
+
+/* Sidebar area */
+.layout-container > *:first-child {
+  height: 100vh;
+  overflow-y: auto;    /* kalau sidebar tinggi, dia sendiri yang scroll */
+}
+
+/* Area konten */
+.layout-content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;    /* hanya konten yang scroll */
+  padding: 24px;
+  background-color: #f7f9fc;
+}

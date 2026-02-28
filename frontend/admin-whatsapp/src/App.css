@@ -1,42 +1,48 @@
+/* RESET GLOBAL */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* hentikan scroll global */
+  font-family: "Poppins", sans-serif;
+}
+
+/* ROOT FULL SCREEN */
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  height: 100%;
+  width: 100%;
+  max-width: 100%;   /* Hapus limit bawaan Vite */
+  margin: 0;
+  padding: 0;
+  text-align: left;  /* Jangan center */
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+/* DASHBOARD LAYOUT */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;      /* LOCK tinggi */
+  overflow: hidden;   /* Tidak scroll */
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* KONTEN UTAMA */
+.content-area {
+  flex: 1;
+  background: #f3f5f7;
+  padding: 30px 40px;
+  overflow-y: auto;   /* Scroll hanya di konten */
+  height: 100vh;      /* Kunci full height */
+  box-sizing: border-box;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* hilangkan scroll */
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+/* Layout utama */
+.dashboard-layout {
+  display: flex;
+  height: 100vh; /* FIX di sini */
 }

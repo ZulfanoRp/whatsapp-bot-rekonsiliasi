@@ -1,0 +1,88 @@
+.content-area {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.search-row {
+  margin-bottom: 20px;
+}
+
+.search-input {
+  width: 350px;
+  padding: 12px;
+  border: 2px solid #b6e7c7;
+  border-radius: 10px;
+  background: #f8fff6;
+  font-size: 15px;
+}
+
+.table-wrapper {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
+  font-size: 16px;
+}
+
+th {
+  background: #e6f8eb;
+  font-weight: 700;
+  color: #006b43;
+}
+
+.no-data {
+  text-align: center;
+  color: gray;
+  padding: 30px;
+}
+
+.btn-download {
+  background: #3498db;
+  padding: 7px 16px;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.pagination-row {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  align-items: center;
+}
+
+.btn-pg {
+  background: #00a165;
+  padding: 10px 18px;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-pg:disabled {
+  background: #cccccc;
+}
+
+.page-info {
+  font-weight: bold;
+}

@@ -1,23 +1,61 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  FaListAlt,
+  FaHistory,
+  FaClipboardList,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import "./Sidebar.css";
 
 export default function Sidebar() {
+  const location = useLocation();
   const navigate = useNavigate();
 
   const logout = () => {
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('username');
-    navigate('/login');
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+    navigate("/login");
   };
 
   return (
-    <div style={{ width: 200, borderRight: '1px solid #ccc', padding: 16 }}>
-      <h4>Admin Menu</h4>
-      <ul style={{ listStyle: 'none', padding: 0 }}>
-        <li><Link to="/whitelist">Whitelist</Link></li>
-        <li><Link to="/logs">Log Activity</Link></li>
-        <li><Link to="/recon-history">Recon History</Link></li>
-      </ul>
-      <button onClick={logout} style={{ marginTop: 16 }}>Logout</button>
-    </div>
+    <aside className="sidebar">
+      <h2 className="sidebar-title">Admin Menu</h2>
+
+      <nav className="sidebar-menu">
+        <Link
+          to="/whitelist"
+          className={`sidebar-item ${
+            location.pathname === "/whitelist" ? "active" : ""
+          }`}
+        >
+          <FaListAlt className="sidebar-icon" />
+          Whitelist
+        </Link>
+
+        <Link
+          to="/logs"
+          className={`sidebar-item ${
+            location.pathname === "/logs" ? "active" : ""
+          }`}
+        >
+          <FaHistory className="sidebar-icon" />
+          Log Activity
+        </Link>
+
+        <Link
+          to="/recon-history"
+          className={`sidebar-item ${
+            location.pathname === "/recon-history" ? "active" : ""
+          }`}
+        >
+          <FaClipboardList className="sidebar-icon" />
+          Recon History
+        </Link>
+      </nav>
+
+      <button className="logout-btn" onClick={logout}>
+        <FaSignOutAlt /> Logout
+      </button>
+    </aside>
   );
 }

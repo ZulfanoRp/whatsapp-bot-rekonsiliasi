@@ -1,0 +1,79 @@
+.sidebar {
+  width: 260px;
+  height: 100vh;                /* FIX AGAR TIDAK SCROLL */
+  background: #0ca667;
+  color: white;
+  padding: 30px 20px;
+
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: hidden; 
+}
+
+.sidebar-title {
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 40px;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 12px 15px;
+  border-radius: 8px;
+
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+
+  transition: 0.2s;
+}
+
+.sidebar-item:hover,
+.sidebar-item.active {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* icon */
+.sidebar-icon {
+  font-size: 18px;
+}
+
+/* logout button */
+.logout-btn {
+  margin-top: auto;
+  margin-bottom: 30px;
+
+  background: white;
+  color: #0ca667;
+  border: none;
+
+  padding: 12px 20px;
+  border-radius: 10px;
+
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  transition: 0.2s;
+
+  margin-bottom: 65px;
+}
+
+.logout-btn:hover {
+  background: #e0e0e0;
+}

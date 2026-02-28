@@ -1,10 +1,11 @@
-import Sidebar from '../components/Sidebar';
+import Sidebar from "../components/Sidebar";
+import "./AdminLayout.css";
 
 export default function AdminLayout({ children }) {
   return (
-    <div style={{ display: 'flex', minHeight: '100vh' }}>
+    <div className="layout-container">
       <Sidebar />
-      <div style={{ flex: 1, padding: 24 }}>
+      <div className="layout-content">
         {children}
       </div>
     </div>
